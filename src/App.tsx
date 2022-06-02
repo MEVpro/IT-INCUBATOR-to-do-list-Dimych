@@ -1,31 +1,61 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import {TasksType, Todolist} from "./Todolist";
 
 
-function App() {
+export type FilterValuesType = 'all' | 'active' | 'completed'
 
-    const task_1: Array<TasksType> = [
-        { id: 1, title: "Sport", isDone: false},
-        { id: 2, title: "Shopping", isDone: true},
-        { id: 3, title: "Reading", isDone: true}
-    ]
-    const task_2: Array<TasksType> = [
-        { id: 1, title: "CSS", isDone: true},
-        { id: 2, title: "HTML", isDone: true},
-        { id: 3, title: "JS", isDone: false}
-    ]
-    const task_3: Array<TasksType> = [
-        { id: 1, title: "Bread", isDone: true},
-        { id: 2, title: "Eggs", isDone: true},
-        { id: 3, title: "Beer", isDone: false}
-    ]
+function App() {
+    let [tasks, setTasks]  = useState<Array<TasksType>> ([
+        {id: 1, title: "Sport", isDone: false},
+        {id: 2, title: "Shopping", isDone: true},
+        {id: 3, title: "Reading", isDone: false},
+        {id: 4, title: "Training", isDone: true}
+    ]);
+
+    let tasksForTodoList = tasks
+    let [filter, setFilter] = useState<FilterValuesType>("all")
+    if (filter === 'all') {
+        tasksForTodoList = tasks.filter(t => tasks)
+    }
+    if (filter === 'active') {
+        tasksForTodoList = tasks.filter(t => t.isDone === false)
+    }
+    if (filter === 'completed') {
+        tasksForTodoList = tasks.filter(t => t.isDone === true)
+    }
+
+    function changeFilter(value: FilterValuesType) {
+        setFilter(value)
+    }
+
+    function removeTask(id: number) {
+    //     let resultTasks = tasks.filter((t) => {
+    //         if (t.id !== id) {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     })
+    // }
+    /////////////////REFACTOR
+    //     let resultTasks = tasks.filter((t) => {
+    //         return t.id !== id
+    //     })
+    // }
+    /////////////////REFACTOR
+        let filteredTasks = tasks.filter(t => t.id !== id)
+        setTasks(filteredTasks);
+}
 
     return (
         <div className="App">
-            <Todolist title={"What to do"} tasks={task_1}/>
-            <Todolist title={"What to learn"} tasks={task_2}/>
-            <Todolist title={"What to by"} tasks={task_3}/>
+            <Todolist
+                title={"What to do"}
+                tasks={tasksForTodoList}
+                removeTask={removeTask}
+                changeFilter={changeFilter}
+            />
         </div>
     );
 }
